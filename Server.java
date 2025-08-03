@@ -1,23 +1,20 @@
-import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
+package RMI;
+
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 
 public class Server {
-    public static void main(String[] args) throws IOException{
-        DatagramSocket socket = new DatagramSocket(4000);
-        byte[] buf = new byte[256];
-        DatagramPacket packet = new DatagramPacket(buf,buf.length);
-        socket.receive(packet);
+    public static void main(String[] args) {
+        try{
+            AdderRemote ad = new AdderRemote();
+            Registry ry = LocateRegistry.createRegistry(3000);
+            ry.rebind("Add", ad);
+            System.out.println("Server is ready");
 
-        InetAddress address = packet.getAddress();
-        int port = packet.getPort();
-        String s = "Hey! Client";
-        buf = s.getBytes();
-
-        packet = new DatagramPacket(buf, buf.length, address, port);
-        socket.send(packet);
-        socket.close();
-        
+        }
+        catch(RemoteException e){
+            e.printStackTrace();
+        }
     }
 }
