@@ -1,20 +1,17 @@
-import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
+package RMI;
+
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 
 public class Clinet {
-    public static void main(String[] args) throws IOException {
-        DatagramSocket socket = new DatagramSocket();
-        byte[] buf = new byte[256];
-        InetAddress address = InetAddress.getByName("localhost");
-        DatagramPacket packet = new DatagramPacket(buf , buf.length,address,4000);
-        socket.send(packet);
-
-        packet = new DatagramPacket(buf, buf.length);
-        socket.receive(packet);
-        String s = new String(packet.getData());
-        System.out.println(s);
-        socket.close();
+    public static void main(String[] args) {
+        try {
+            Registry re = LocateRegistry.getRegistry(3000);
+            RemoteInterface add = (RemoteInterface) re.lookup("Add");
+             int s = add.add(2,3);
+             System.out.println(s);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
